@@ -2,7 +2,7 @@ FROM rocker/shiny-verse
 
 RUN sudo apt-get update && sudo apt-get -y upgrade && sudo apt-get -y install libhdf5-dev
 
-RUN sudo apt-get -y install libbz2-dev liblzma-dev
+RUN sudo apt-get -y install libbz2-dev liblzma-dev build-essential libglpk-dev
 
 RUN sudo R -e 'install.packages(c("BiocManager","MASS","mgcv","nlme"))' \
  && install2.r --error --deps TRUE devtools \
@@ -11,7 +11,9 @@ RUN sudo R -e 'install.packages(c("BiocManager","MASS","mgcv","nlme"))' \
 
 RUN R -e 'BiocManager::install("Rhtslib")'
 
-#RUN R -e 'BiocManager::install(c("Rhtslib","GenomicRanges","monocle","rtracklayer"))'
+RUN R -e 'install.packages("igraph")'
+
+#RUN R -e 'BiocManager::install(c("GenomicRanges","monocle","rtracklayer"))'
 
 RUN R -e 'BiocManager::install(c( "S4Vectors", "SummarizedExperiment", "SingleCellExperiment", "MAST", "DESeq2", "BiocGenerics", "GenomicRanges", "GenomeInfoDb", "IRanges", "rtracklayer", "monocle", "Biobase", "limma", "multtest"))'
 
