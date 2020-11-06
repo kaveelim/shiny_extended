@@ -1,6 +1,7 @@
 FROM rocker/shiny-verse
 
 RUN sudo apt-get update && sudo apt-get -y upgrade && sudo apt-get -y install libhdf5-dev
+
 RUN sudo apt-get -y install libbz2-dev
 
 RUN sudo R -e 'install.packages(c("BiocManager","MASS","mgcv","nlme"))' \
@@ -10,8 +11,7 @@ RUN sudo R -e 'install.packages(c("BiocManager","MASS","mgcv","nlme"))' \
 
 RUN R -e 'BiocManager::install("Rhtslib")'
 
-
-RUN R -e 'BiocManager::install(c("Rhtslib","GenomicRanges","monocle","rtracklayer"))'
+#RUN R -e 'BiocManager::install(c("Rhtslib","GenomicRanges","monocle","rtracklayer"))'
 
 RUN R -e 'BiocManager::install(c( "S4Vectors", "SummarizedExperiment", "SingleCellExperiment", "MAST", "DESeq2", "BiocGenerics", "GenomicRanges", "GenomeInfoDb", "IRanges", "rtracklayer", "monocle", "Biobase", "limma", "multtest"))'
 
