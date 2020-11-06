@@ -1,11 +1,14 @@
 FROM rocker/shiny-verse
 
 RUN sudo apt-get update && sudo apt-get -y upgrade && sudo apt-get -y install libhdf5-dev
+RUN sudo apt-get -y install libbz2-dev
 
 RUN sudo R -e 'install.packages(c("BiocManager","MASS","mgcv","nlme"))' \
  && install2.r --error --deps TRUE devtools \
  && R -e 'devtools::install_github(repo = "hhoeflin/hdf5r")' \
  && R -e 'devtools::install_github(repo = "mojaveazure/loomR", ref = "develop")'
+
+RUN R -e 'BiocManager::install("Rhtslib")'
 
 
 RUN R -e 'BiocManager::install(c("Rhtslib","GenomicRanges","monocle","rtracklayer"))'
