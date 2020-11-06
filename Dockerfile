@@ -9,6 +9,8 @@ RUN sudo R -e 'install.packages(c("BiocManager","MASS","mgcv","nlme"))' \
 
 RUN R -e 'BiocManager::install(c( "S4Vectors", "SummarizedExperiment", "SingleCellExperiment", "MAST", "DESeq2", "BiocGenerics", "GenomicRanges", "GenomeInfoDb", "IRanges", "rtracklayer", "monocle", "Biobase", "limma", "multtest"))'
 
+RUN R -e 'BiocManager::install(c("monocle","rtracklayer"))'
+
 RUN install2.r --error \
  --deps TRUE \
  shinyjs \
