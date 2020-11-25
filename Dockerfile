@@ -13,7 +13,6 @@ RUN R -e 'BiocManager::install("Rhtslib")'
 
 RUN R -e 'install.packages("igraph")'
 
-#RUN R -e 'BiocManager::install(c("GenomicRanges","monocle","rtracklayer"))'
 
 RUN R -e 'BiocManager::install(c( "S4Vectors", "SummarizedExperiment", "SingleCellExperiment", "MAST", "DESeq2", "BiocGenerics", "GenomicRanges", "GenomeInfoDb", "IRanges", "rtracklayer", "monocle", "Biobase", "limma", "multtest"))'
 
@@ -29,3 +28,9 @@ RUN install2.r --error \
  && R -e 'devtools::install_github("pachterlab/sleuth")' \
  && R -e 'devtools::install_github("thomasp85/patchwork")' \
  && rm -rf /tmp/downloaded_packages
+
+# Additional R packages
+RUN install2.r --error \
+ --deps TRUE \
+ shinycssloaders \
+&& rm -rf /tmp/downloaded_packages
