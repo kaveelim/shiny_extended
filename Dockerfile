@@ -33,4 +33,5 @@ RUN install2.r --error \
 RUN install2.r --error \
  --deps TRUE \
  shinycssloaders \
+ waiter \
 && rm -rf /tmp/downloaded_packages
