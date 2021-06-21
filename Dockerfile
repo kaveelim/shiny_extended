@@ -16,6 +16,8 @@ RUN R -e 'install.packages("igraph")'
 
 RUN R -e 'BiocManager::install(c( "S4Vectors", "SummarizedExperiment", "SingleCellExperiment", "MAST", "DESeq2", "BiocGenerics", "GenomicRanges", "GenomeInfoDb", "IRanges", "rtracklayer", "monocle", "Biobase", "limma", "multtest"))'
 
+# Fix gdal-config not found
+RUN sudo apt-get -y install libgdal-dev
 
 RUN install2.r --error \
  --deps TRUE \
