@@ -42,5 +42,13 @@ docker run --rm \
 ## Maintenance
 
 The R version, Bioconductor version, and pinned GitHub revisions should be
-updated together. Pull requests are checked by building the image in GitHub
-Actions.
+updated together. Pull requests are checked by building the image, loading the
+installed R packages, and contacting Shiny Server in GitHub Actions.
+
+After those checks pass, pushes to `master` publish the image to Docker Hub as:
+
+- `kaveemd/shiny_extended:latest`
+- `kaveemd/shiny_extended:4.2.1`
+
+Publishing requires the `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` repository
+secrets. Running the workflow manually from `master` also publishes both tags.
