@@ -1,4 +1,4 @@
-FROM rocker/shiny-verse
+FROM rocker/shiny-verse:4.2.1
 
 RUN sudo apt-get update && sudo apt-get -y upgrade && sudo apt-get -y install libhdf5-dev
 
