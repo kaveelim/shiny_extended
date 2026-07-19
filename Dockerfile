@@ -1,43 +1,47 @@
 FROM rocker/shiny-verse:4.2.1
 
-RUN sudo apt-get update && sudo apt-get -y upgrade && sudo apt-get -y install libhdf5-dev
+ARG BIOCONDUCTOR_VERSION=3.16
 
-RUN sudo apt-get -y install libbz2-dev liblzma-dev build-essential libglpk-dev libgsl-dev
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+      build-essential \
+      libbz2-dev \
+      libgdal-dev \
+      libgeos-dev \
+      libglpk-dev \
+      libgsl-dev \
+      libhdf5-dev \
+      liblzma-dev \
+      libproj-dev \
+      libudunits2-dev \
+ && rm -rf /var/lib/apt/lists/*
 
-RUN sudo R -e 'install.packages(c("BiocManager","MASS","mgcv","nlme"))' \
- && install2.r --error --deps TRUE devtools \
- && R -e 'devtools::install_github(repo = "hhoeflin/hdf5r")' \
- && R -e 'devtools::install_github(repo = "mojaveazure/loomR", ref = "develop")'
+# Keep Bioconductor aligned with R 4.2 and avoid interactive package updates.
+RUN R -e "install.packages('BiocManager'); BiocManager::install(version = '${BIOCONDUCTOR_VERSION}', ask = FALSE, update = FALSE)" \
+ && install2.r --error \
+      DT \
+      Seurat \
+      devtools \
+      igraph \
+      plotly \
+      sf \
+      shinycssloaders \
+      shinyjs \
+      waiter \
+ && R -e "BiocManager::install(c( \
+      'Biobase', 'BiocGenerics', 'DESeq2', 'GenomeInfoDb', 'GenomicRanges', \
+      'IRanges', 'limma', 'MAST', 'monocle', 'multtest', 'rhdf5', 'Rhtslib', \
+      'rtracklayer', 'S4Vectors', 'SingleCellExperiment', 'SummarizedExperiment' \
+    ), ask = FALSE, update = FALSE)" \
+ && R -e "remotes::install_github(c( \
+      'hhoeflin/hdf5r@d38b053ea3dd4fd5137ccdd7e561070c98e9bd47', \
+      'mojaveazure/loomR@1eca16a60f529944050e2a3419040cb811726699', \
+      'pachterlab/sleuth@15457c45697bf9c4e0b593c2a9e187c3bb6a5cb3', \
+      'thomasp85/patchwork@43253f41d2a19d74c507c60f38718039ad6d551f' \
+    ), upgrade = 'never')" \
+ && rm -rf /tmp/downloaded_packages /tmp/Rtmp*
 
-RUN R -e 'BiocManager::install("Rhtslib")'
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD curl --fail --silent http://localhost:3838/ >/dev/null || exit 1
 
-RUN R -e 'install.packages("igraph")'
-
-
-RUN R -e 'BiocManager::install(c( "S4Vectors", "SummarizedExperiment", "SingleCellExperiment", "MAST", "DESeq2", "BiocGenerics", "GenomicRanges", "GenomeInfoDb", "IRanges", "rtracklayer", "monocle", "Biobase", "limma", "multtest"))'
-
-# Fix gdal-config not found
-RUN sudo apt-get -y install libgdal-dev libudunits2-dev
-
-RUN install2.r --error \
- --deps TRUE \
- sf
-
-RUN install2.r --error \
- --deps TRUE \
- shinyjs \
- Seurat \
- devtools \
- plotly \
- DT \
- && R -e 'BiocManager::install("rhdf5")' \
- && R -e 'devtools::install_github("pachterlab/sleuth")' \
- && R -e 'devtools::install_github("thomasp85/patchwork")' \
- && rm -rf /tmp/downloaded_packages
-
-# Additional R packages
-RUN install2.r --error \
- --deps TRUE \
- shinycssloaders \
- waiter \
-&& rm -rf /tmp/downloaded_packages
+EXPOSE 3838
